@@ -106,18 +106,20 @@ const billsToTrack = [
 ];
 (async () => {
     for (const bill of billsToTrack) {
-
         const senateId = bill.senate.replace("S", "");
         const assemblyId = bill.assembly.replace("A", "");
 
-        console.log("=================================");
+        console.log("\n=================================");
         console.log("Bill:", bill.name);
 
         const senateData = await getBillData(senateId);
         const assemblyData = await getBillData(assemblyId);
 
-        console.log("Senate", bill.senate, senateData);
-        console.log("Assembly", bill.assembly, assemblyData);
+        console.log("Senate Result:");
+        console.log(JSON.stringify(senateData, null, 2));
+
+        console.log("Assembly Result:");
+        console.log(JSON.stringify(assemblyData, null, 2));
     }
 })();
 
