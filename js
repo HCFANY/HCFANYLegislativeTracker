@@ -1,21 +1,5 @@
-import fetch from "node-fetch";
-
 const apiKey = "pFG7FfWnbMs5H9HdZQWDYmVG8utnxSDx";
 const year = "2025";
-const billsToTrack = [
-  { senate: "S705", assembly: "A2140", name: "Fair Pricing Act" },
-  { senate: "S1634", assembly: "A1915", name: "Primary Care Investment Act" },
-  { senate: "S6375", assembly: "A6773", name: "No Blank Checks" },
-  { senate: "S1804", assembly: "A128", name: "No copay inhalers" },
-  { senate: "S1226", assembly: "A6004", name: "LICH" },
-  { senate: "S359", assembly: "A1356", name: "Stop SUNY" },
-  { senate: "S5546", assembly: "A57", name: "Consumer Debt Uniformity Act" },
-  { senate: "S6254", assembly: "A3919", name: "Dental Loss Ratio" },
-  { senate: "S3602", assembly: "A5199", name: "TPS Medicaid coverage" },
-  { senate: "S3762", assembly: "A1710", name: "Coverage4All" },
-  { senate: "S3425", assembly: "A1466", name: "NY Health Act" }
-];
-
 
 /**
  * Fetch bill data from NY Senate API
@@ -38,8 +22,7 @@ async function getBillData(billId) {
     const latestPrintNo = latestVersionKey ? basePrintNo + latestVersionKey : basePrintNo;
 
     // Sponsor short name
-    const sponsorName =
-        bill?.sponsor?.member?.shortName ?? null;
+    const sponsorName = bill?.sponsor?.member?.shortName ?? null;
 
     // Label for output
     const billName = `${latestPrintNo} (${sponsorName})`;
@@ -66,7 +49,7 @@ async function getBillData(billId) {
     // ------------------------------
     const milestones = bill?.milestones?.items || [];
     const passedMilestones = milestones.filter(m => m.statusType?.includes("PASSED"));
-    
+
     const passedStatus = passedMilestones.length
         ? `Passed ${bill.billType.desc}`
         : null;
@@ -85,7 +68,7 @@ async function getBillData(billId) {
     // Last Action
     // ------------------------------
     const actions = bill?.actions?.items || [];
-    const lastAction = actions.length ? actions[actions.length - 1] : null;
+    const lastAction = actions.length ? actions.at(-1) : null;
 
     const lastActionText = lastAction?.text ?? null;
     const lastActionDate = lastAction?.date ?? null;
@@ -108,21 +91,33 @@ async function getBillData(billId) {
         LastAction: lastActionCombined
     };
 }
-
-// ----------------------------------
-// Example Usage
-// ----------------------------------
+const billsToTrack = [
+  { senate: "S705", assembly: "A2140", name: "Fair Pricing Act" },
+  { senate: "S1634", assembly: "A1915", name: "Primary Care Investment Act" },
+  { senate: "S6375", assembly: "A6773", name: "No Blank Checks" },
+  { senate: "S1804", assembly: "A128", name: "No copay inhalers" },
+  { senate: "S1226", assembly: "A6004", name: "LICH" },
+  { senate: "S359", assembly: "A1356", name: "Stop SUNY" },
+  { senate: "S5546", assembly: "A57", name: "Consumer Debt Uniformity Act" },
+  { senate: "S6254", assembly: "A3919", name: "Dental Loss Ratio" },
+  { senate: "S3602", assembly: "A5199", name: "TPS Medicaid coverage" },
+  { senate: "S3762", assembly: "A1710", name: "Coverage4All" },
+  { senate: "S3425", assembly: "A1466", name: "NY Health Act" }
+];
 (async () => {
-    const result = await getBillData("A100");
-    console.log(result);
+    for (const bill of billsToTrack) {
+
+        const senateId = bill.senate.replace("S", "");
+        const assemblyId = bill.assembly.replace("A", "");
+
+        console.log("=================================");
+        console.log("Bill:", bill.name);
+
+        const senateData = await getBillData(senateId);
+        const assemblyData = await getBillData(assemblyId);
+
+        console.log("Senate", bill.senate, senateData);
+        console.log("Assembly", bill.assembly, assemblyData);
+    }
 })();
-for (const bill of billsToTrack) {
-    const senateBillId = bill.senate.substring(1);   // remove "S"
-    const assemblyBillId = bill.assembly.substring(1); // remove "A"
 
-    const senateResult = await getBillData(senateBillId);
-    const assemblyResult = await getBillData(assemblyBillId);
-
-    console.log("Senate:", bill.senate, senateResult);
-    console.log("Assembly:", bill.assembly, assemblyResult);
-}
