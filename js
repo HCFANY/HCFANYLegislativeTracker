@@ -2,6 +2,20 @@ import fetch from "node-fetch";
 
 const apiKey = "pFG7FfWnbMs5H9HdZQWDYmVG8utnxSDx";
 const year = "2025";
+const billsToTrack = [
+  { senate: "S705", assembly: "A2140", name: "Fair Pricing Act" },
+  { senate: "S1634", assembly: "A1915", name: "Primary Care Investment Act" },
+  { senate: "S6375", assembly: "A6773", name: "No Blank Checks" },
+  { senate: "S1804", assembly: "A128", name: "No copay inhalers" },
+  { senate: "S1226", assembly: "A6004", name: "LICH" },
+  { senate: "S359", assembly: "A1356", name: "Stop SUNY" },
+  { senate: "S5546", assembly: "A57", name: "Consumer Debt Uniformity Act" },
+  { senate: "S6254", assembly: "A3919", name: "Dental Loss Ratio" },
+  { senate: "S3602", assembly: "A5199", name: "TPS Medicaid coverage" },
+  { senate: "S3762", assembly: "A1710", name: "Coverage4All" },
+  { senate: "S3425", assembly: "A1466", name: "NY Health Act" }
+];
+
 
 /**
  * Fetch bill data from NY Senate API
@@ -102,3 +116,13 @@ async function getBillData(billId) {
     const result = await getBillData("A100");
     console.log(result);
 })();
+for (const bill of billsToTrack) {
+    const senateBillId = bill.senate.substring(1);   // remove "S"
+    const assemblyBillId = bill.assembly.substring(1); // remove "A"
+
+    const senateResult = await getBillData(senateBillId);
+    const assemblyResult = await getBillData(assemblyBillId);
+
+    console.log("Senate:", bill.senate, senateResult);
+    console.log("Assembly:", bill.assembly, assemblyResult);
+}
