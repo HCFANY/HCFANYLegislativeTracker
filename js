@@ -106,8 +106,8 @@ const billsToTrack = [
 ];
 (async () => {
     for (const bill of billsToTrack) {
-        const senateId = bill.senate.replace("S", "");
-        const assemblyId = bill.assembly.replace("A", "");
+        const senateId = bill.senate;
+        const assemblyId = bill.assembly;
 
         console.log("\n=================================");
         console.log("Bill:", bill.name);
